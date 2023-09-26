@@ -238,7 +238,7 @@ void StereoNode::init() {
     loadCameraCalibration();
 
     cameraInfoPublisher = this->create_publisher<nerian_stereo::msg::StereoCameraInfo>("/nerian_stereo/stereo_camera_info", 1);
-    cloudPublisher = this->create_publisher<sensor_msgs::msg::PointCloud2>("/nerian_stereo/point_cloud", 5);
+    cloudPublisher = this->create_publisher<sensor_msgs::msg::PointCloud2>("/nerian_stereo/point_cloud", 1);
 
     transformBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
     currentTransform.header.stamp = this->get_clock()->now();
@@ -256,8 +256,8 @@ void StereoNode::init() {
     //initDynamicReconfigure();
     publishTransform(); // initial transform
     prepareAsyncTransfer();
-    // 2kHz timer for lower latency (stereoIteration will then block)
-    timer = this->create_wall_timer(500us, std::bind(&StereoNode::stereoIteration, this));
+    // 200Hz timer for lower latency (stereoIteration will then block)
+    timer = this->create_wall_timer(5ms, std::bind(&StereoNode::stereoIteration, this));
 
     reactToParameterUpdates = true;
 }
@@ -275,7 +275,7 @@ void StereoNode::prepareAsyncTransfer() {
 void StereoNode::processOneImageSet() {
     // Receive image data
     ImageSet imageSet;
-    if(asyncTransfer->collectReceivedImageSet(imageSet, 0.005)) {
+    if(asyncTransfer->collectReceivedImageSet(imageSet, 0.1)) {
 
         // Get time stamp
         rclcpp::Time stamp;
@@ -332,7 +332,7 @@ void StereoNode::processOneImageSet() {
                 recon3d.reset(new Reconstruct3D);
             }
 
-            publishPointCloudMsg(imageSet, stamp);
+            //publishPointCloudMsg(imageSet, stamp);
         }
 
         if(cameraInfoPublisher != NULL && cameraInfoPublisher->get_subscription_count() > 0) {
@@ -350,6 +350,9 @@ void StereoNode::processOneImageSet() {
             lastLogFrames = frameNum;
             lastLogTime = timeNow;
         }
+    }
+    else {
+        RCLCPP_WARN_STREAM(this->get_logger(), "Timed out accessing data. Dropped " << asyncTransfer->getNumDroppedFrames());
     }
 }
 

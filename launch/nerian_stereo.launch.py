@@ -7,7 +7,7 @@ def generate_launch_description():
                 package='nerian_stereo',
                 executable='nerian_stereo_node',
                 parameters=[
-                    {'remote_host':                  '192.168.10.10'},
+                    {'remote_host':                  '192.168.132.10'},
                     {'remote_port':                  '7681'},
                     {'use_tcp':                       False},
 
@@ -17,11 +17,11 @@ def generate_launch_description():
                     {'ros_timestamps':                True},
 
                     {'max_depth':                     -1},
-                    {'point_cloud_intensity_channel', 'mono8'},
-                    {'color_code_disparity_map',      ''},
+                    {'point_cloud_intensity_channel': 'rgb32f'},
+                    {'color_code_disparity_map':      ''},
                     {'color_code_legend':             False},
 
-                    {'calibration_file':              ''},
+                    {'calibration_file':              '/home/administrator/nerian_calib.yaml'},
                     {'q_from_calib_file':             False},
                     {'delay_execution':               0.0},
  
