@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Nerian Vision GmbH
+ * Copyright (c) 2023 Allied Vision Technologies GmbH
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,6 @@
 
 #include <colorcoder.h>
 
-//#include <nerian_stereo/NerianStereoConfig.h>
 #include <nerian_stereo/msg/stereo_camera_info.hpp>
 
 
@@ -52,11 +51,11 @@ using namespace visiontransfer;
  * \brief A driver node that receives data from Nerian stereo devices and forwards
  * it to ROS.
  *
- * SceneScan and Scarlet by Nerian Vision GmbH are hardware systems for
- * real-time stereo vision. They transmit a computed disparity map (an
- * inverse depth map) through gigabit ethernet, which is then received by
- * this node. The node converts the received data into ROS messages, which
- * contain the following data:
+ * Nerian SceneScan, Scarlet and Ruby by Allied Vision Technologies GmbH
+ * are hardware systems for real-time stereo vision. They transmit a computed
+ * disparity map (an inverse depth map) through gigabit ethernet, which is then
+ * received by this node. The node converts the received data into ROS messages,
+ * which contain the following data:
  *
  * - Point cloud of reconstructed 3D locations
  * - Disparity map with optional color coding
@@ -64,8 +63,8 @@ using namespace visiontransfer;
  *
  * In addition, camera calibration information is also published. For
  * configuration parameters, please see the provided example launch file.
- * For more information about Nerian's stereo systems, please visit
- * http://nerian.com/products/scenescan-stereo-vision/
+ * For more information about Allied Vision's stereo systems, please visit
+ * https://www.alliedvision.com/en/products/3d-cameras/
  */
 
 namespace nerian_stereo {
@@ -148,9 +147,7 @@ private:
         "use_tcp",
         "ros_coordinate_system",
         "ros_timestamps",
-        "calibration_file",
         "delay_execution",
-        "q_from_calib_file",
     };
 
     // Handler for external parameter change attempts
@@ -166,10 +163,8 @@ private:
     std::string frame; // outer frame (e.g. world)
     std::string internalFrame; // our private frame / Transform we publish
     std::string remoteHost;
-    std::string calibFile;
     double execDelay;
     double maxDepth;
-    bool useQFromCalibFile;
     PointCloudColorMode pointCloudColorMode;
 
     // Other members
@@ -198,11 +193,6 @@ private:
 
     // Extra debug messages
     bool debugMessagesParameters;
-
-    /**
-     * \brief Loads a camera calibration file if configured
-     */
-    void loadCameraCalibration();
 
     /**
      * \brief Publishes the disparity map as 16-bit grayscale image or color coded
@@ -244,11 +234,6 @@ private:
      * \brief Publishes the camera info once per second
      */
     void publishCameraInfo(rclcpp::Time stamp, const ImageSet& imageSet);
-
-    /**
-     * \brief Reads a vector from the calibration file
-     */
-    template<class T> void readCalibrationArray(const char* key, T& dest);
 
     /**
      * \brief Timer callback that polls the image and data channel receivers
