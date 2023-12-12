@@ -155,6 +155,7 @@ private:
 
     // Parameters
     bool useTcp;
+    bool publishFrame;
     std::string colorCodeDispMap;
     bool colorCodeLegend;
     bool rosCoordinateSystem;

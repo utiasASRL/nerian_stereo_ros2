@@ -182,6 +182,7 @@ void StereoNode::init() {
     this->declare_parameter("color_code_legend",             false);
     this->declare_parameter("top_level_frame",               "world");
     this->declare_parameter("internal_frame",                "nerian_stereo");
+    this->declare_parameter("publish_internal_frame",        true);
     this->declare_parameter("remote_port",                   "7681");
     this->declare_parameter("remote_host",                   "0.0.0.0");
     this->declare_parameter("use_tcp",                       false);
@@ -209,6 +210,7 @@ void StereoNode::init() {
     colorCodeLegend = this->get_parameter("color_code_legend").as_bool();
     frame = this->get_parameter("top_level_frame").as_string();
     internalFrame = this->get_parameter("internal_frame").as_string();
+    publishFrame = this->get_parameter("publish_internal_frame").as_bool();
     remotePort = this->get_parameter("remote_port").as_string();
     remoteHost = this->get_parameter("remote_host").as_string();
     useTcp = this->get_parameter("use_tcp").as_bool();
@@ -251,7 +253,7 @@ void StereoNode::init() {
     publishTransform(); // initial transform
     prepareAsyncTransfer();
     // 200Hz timer for lower latency (stereoIteration will then block)
-    timer = this->create_wall_timer(5ms, std::bind(&StereoNode::stereoIteration, this));
+    timer = this->create_wall_timer(1ms, std::bind(&StereoNode::stereoIteration, this));
 
     reactToParameterUpdates = true;
 }
@@ -808,7 +810,8 @@ void StereoNode::processDataChannels() {
 }
 
 void StereoNode::publishTransform() {
-    transformBroadcaster->sendTransform(currentTransform);
+    if (publishFrame)
+        transformBroadcaster->sendTransform(currentTransform);
 }
 
 void StereoNode::stereoIteration() {

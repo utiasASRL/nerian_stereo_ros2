@@ -9,20 +9,18 @@ def generate_launch_description():
                 parameters=[
                     {'remote_host':                  '192.168.132.10'},
                     {'remote_port':                  '7681'},
-                    {'use_tcp':                       False},
+                    {'use_tcp':                       True},
 
-                    {'top_level_frame':               'world'},
+                    {'top_level_frame':               'nerian_stereo'},
                     {'internal_frame':                'nerian_stereo'},
+                    {'publish_internal_frame':        False},
                     {'ros_coordinate_system':         True},
                     {'ros_timestamps':                True},
 
                     {'max_depth':                     -1},
                     {'point_cloud_intensity_channel': 'rgb32f'},
                     {'color_code_disparity_map':      ''},
-                    {'color_code_legend':             False},
 
-                    {'calibration_file':              '/home/administrator/nerian_calib.yaml'},
-                    {'q_from_calib_file':             False},
                     {'delay_execution':               0.0},
  
                 ]
