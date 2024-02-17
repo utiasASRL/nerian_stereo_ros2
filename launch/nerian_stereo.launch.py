@@ -6,7 +6,7 @@ def generate_launch_description():
     nerian_stereo_node = Node(
                 package='nerian_stereo',
                 executable='nerian_stereo_node',
-                prefix='xterm -e gdb -ex run --args',
+                #prefix='xterm -e gdb -ex run --args',
                 parameters=[
                     {'remote_host':                  '192.168.131.10'},
                     {'remote_port':                  '7681'},
